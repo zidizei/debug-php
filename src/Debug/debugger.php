@@ -66,8 +66,10 @@ class Debugger {
                 $tag = key($this->profiles);
                 reset($this->profiles);
 
+                // And close it
                 $this->closeProfile($tag);
             } else {
+                // Open a default profile if there are no profiles yet
                 $this->openProfile('debug');
             }
         }
@@ -80,10 +82,6 @@ class Debugger {
 
         $this->profiles[$tag] = array('color' => $this->colors[$pos], 'start' => round(microtime(true) * 1000));
         $this->currentProfile = $tag;
-
-        $len = strlen($tag);
-
-        if ($len > $this->colspacing) $this->colspacing = $len;
 
         $this->printDebug('', 'starting...', $tag);
     }
@@ -99,7 +97,8 @@ class Debugger {
 
         unset($this->profiles[$tag]);
 
-        // Get the tag name of the last profile.
+        // Get the tag name of the last profile, which will be the
+        // new current profile.
         end($this->profiles);
         $this->currentProfile = key($this->profiles);
         reset($this->profiles);
@@ -133,6 +132,8 @@ class Debugger {
         }
         else
         {
+            // TODO: if Browser extensions like Chrome Logger are utilised, the following would be the fallback solution
+            //       to print to the browser's JavaScript console
             echo "<script>console.log('%c$tag $icon%c $obj %c$duration ms', 'color: $color', 'color: ".$this->colors[7][$this->transport]."', 'color: $color');</script>";
         }
 
@@ -143,7 +144,7 @@ class Debugger {
     private function __construct ()
     {
         $this->profiles = array();
-        $this->transport = (php_sapi_name() == 'cli') ? 'CLI' : 'Web';
+        $this->transport = (php_sapi_name() == 'cli') ? 'CLI' : 'Web'; // TODO: maybe check for some Browser extensions like Chrome Logger
     }
 
 }
