@@ -53,11 +53,11 @@ messages. The example above only uses one profile by calling:
 
 If a *profile* by that name already exists, it will be closed.
 You can close the currently active (as in last opened) profile
-by ommitting the parameter:
+by omitting the parameter:
 
     \Debug\profile()
 
-If there are now active profiles, it will open a default one
+If there are no active profiles, it will open a default one
 (aptly named *default*).
 Note that there has to be **at least one** profile open for debugging.
 
