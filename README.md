@@ -12,7 +12,7 @@ Use [Composer](http://getcomposer.org) and add this to your
 `composer.json`:
 
     "require": {
-        "zidizei/debug-php", "~0.1.0"
+        "zidizei/debug", "~0.1.0"
     }
 
 ## Usage

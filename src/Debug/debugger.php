@@ -132,12 +132,24 @@ class Debugger {
         }
         else
         {
+            $obj = $this->escapeForConsole($obj);
+
             // TODO: if Browser extensions like Chrome Logger are utilised, the following would be the fallback solution
             //       to print to the browser's JavaScript console
             echo "<script>console.log('%c$tag $icon%c $obj %c$duration ms', 'color: $color', 'color: ".$this->colors[7][$this->transport]."', 'color: $color');</script>";
         }
 
         $this->lastDebug = round(microtime(true) * 1000);
+    }
+
+
+    private function escapeForConsole ($obj)
+    {
+      // TODO: if not a String, use another function to get a String representation of that object
+      //       and then escape it here
+      if (!is_string($obj)) return $obj;
+
+      return addslashes(str_replace("\n", "\\n", $obj));
     }
 
 
