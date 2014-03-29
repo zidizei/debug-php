@@ -42,11 +42,19 @@ class Debugger {
         $debugger->manageProfiles($tag);
     }
 
-    public static function debug ($icon, $obj)
+    public static function debug ($obj)
     {
         $debugger = self::getInstance();
-        $debugger->printDebug($icon, $obj);
+        $debugger->printDebug($obj);
     }
+
+
+    private function __construct ()
+    {
+        $this->profiles = array();
+        $this->transport = (php_sapi_name() == 'cli') ? 'CLI' : 'Web'; // TODO: maybe check for some Browser extensions like Chrome Logger
+    }
+
 
     private function manageProfiles ($tag=null)
     {
@@ -83,7 +91,7 @@ class Debugger {
         $this->profiles[$tag] = array('color' => $this->colors[$pos], 'start' => round(microtime(true) * 1000));
         $this->currentProfile = $tag;
 
-        $this->printDebug('', 'starting...', $tag);
+        $this->printDebug('starting...', $tag);
     }
 
     private function closeProfile ($tag)
@@ -93,7 +101,7 @@ class Debugger {
         $start = $profile['start'];
         $end   = round(microtime(true) * 1000);
 
-        $this->printDebug('', 'finished after '.($end - $profile['start']).' ms', $tag);
+        $this->printDebug('finished after '.($end - $profile['start']).' ms', $tag);
 
         unset($this->profiles[$tag]);
 
@@ -105,10 +113,12 @@ class Debugger {
     }
 
 
-    private function printDebug ($icon, $obj, $tag=null)
+    private function printDebug ($obj, $tag=null)
     {
         $tag   = ($tag == null) ? $this->currentProfile : $tag;
         $color = $this->profiles[$tag]['color'][$this->transport];
+
+        $msg   = (is_array($obj)) ? $this->buildDebugMessage($obj) : $obj;
 
         if ($this->lastDebug > 0) {
             $duration = "+".(round(microtime(true) * 1000)-$this->lastDebug);
@@ -118,30 +128,95 @@ class Debugger {
 
         if ($this->transport == 'CLI')
         {
-            echo "\n";
             echo $color;
 
-            echo $tag." ".$icon;
+            echo $tag;
 
             echo $this->colors[7][$this->transport]." ";
-            echo $obj;
+            echo $msg;
             echo " ".$color;
 
             echo $duration." ms";
             echo "\033[0m";
+            echo "\n";
         }
         else
         {
-            $obj = $this->escapeForConsole($obj);
+            $msg = $this->escapeForConsole($msg);
 
             // TODO: if Browser extensions like Chrome Logger are utilised, the following would be the fallback solution
             //       to print to the browser's JavaScript console
-            echo "<script>console.log('%c$tag $icon%c $obj %c$duration ms', 'color: $color', 'color: ".$this->colors[7][$this->transport]."', 'color: $color');</script>";
+            echo "<script>console.log('%c$tag %c $msg %c$duration ms', 'color: $color', 'color: ".$this->colors[7][$this->transport]."', 'color: $color');</script>";
         }
 
         $this->lastDebug = round(microtime(true) * 1000);
     }
 
+    private function buildDebugMessage ($obj)
+    {
+    	$count = count($obj);
+
+    	if ($count == 0) return "";
+    	if ($count == 1) return $obj[0];
+
+    	if (is_string($obj[0]))
+    	{
+    		$format = array_shift($obj);
+    		$args   = array();
+
+	    	foreach ($obj as $value)
+	    	{
+	    		if (is_array($value))
+	    		{
+	    			$args[] = $this->prepareDebugArray($value);
+	    		}
+	    		else if (is_object($value))
+	    		{
+	    			$args[] = $this->prepareDebugObject($value);
+	    		}
+	    	}
+
+    		return vsprintf($format, $args);
+    	}
+    	else
+    	{
+
+    	}
+    }
+
+    private function prepareDebugArray ($arr)
+    {
+    	$str = "{ ";
+    	$i   = 0;
+
+    	foreach ($arr as $key => $value)
+    	{
+    		if (!is_numeric($key)) $str .= $key.': ';
+
+    		if (is_array($value)) {
+    			$str .= $this->prepareDebugArray($value);
+    		} else if (is_object($value)) {
+    			$str .= $this->prepareDebugObject($value);
+    		} else {
+				ob_start();
+				var_dump($value);
+				$str .= str_replace("\n", "", ob_get_clean());
+    		}
+
+    		if (++$i < count($arr)) $str .= ", ";
+    	}
+
+    	$str .= " }";
+
+    	return $str;
+    }
+
+    private function prepareDebugObject ($obj)
+    {
+    	if (method_exists($obj, "__toString")) return str_replace("\n", "", (string) $obj);
+
+    	return $this->prepareDebugArray(get_object_vars($obj));
+    }
 
     private function escapeForConsole ($obj)
     {
@@ -150,13 +225,6 @@ class Debugger {
       if (!is_string($obj)) return $obj;
 
       return addslashes(str_replace("\n", "\\n", $obj));
-    }
-
-
-    private function __construct ()
-    {
-        $this->profiles = array();
-        $this->transport = (php_sapi_name() == 'cli') ? 'CLI' : 'Web'; // TODO: maybe check for some Browser extensions like Chrome Logger
     }
 
 }
