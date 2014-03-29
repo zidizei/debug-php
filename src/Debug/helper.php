@@ -5,25 +5,12 @@ use Debug\Debugger;
 
 function profile ($tag=null)
 {
-    $debugger = Debugger::profile($tag);
+    Debugger::profile($tag);
 }
 
-function debug ($obj)
+function debug()
 {
-    Debugger::debug('-', $obj);
-}
+	$argv = func_get_args();
 
-function warn ($obj)
-{
-    Debugger::debug('!', $obj);
-}
-
-function error ($obj)
-{
-    Debugger::debug('x', $obj);
-}
-
-function assert ($obj)
-{
-    Debugger::debug('✓', $obj);
+	Debugger::debug($argv);
 }
