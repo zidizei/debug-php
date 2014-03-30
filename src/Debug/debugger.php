@@ -1,11 +1,20 @@
 <?php
-namespace Debug;
-
 /**
  * Simple debugging utility for PHP.
  * Prints out messages to stdout or the browser's JavaScript console, if supported.
  *
  * @author Patrick Lam
+ */
+
+namespace Debug;
+
+/**
+ * Main class to display and prepare debug messages.
+ * Determines PHP environment using php_sapi_name() to decide whether debug messages
+ * should be printed to stdout or a browser's JavaScript console by echoing
+ * JavaScript enclosed by <script> tags.
+ *
+ * @package Debug
  */
 class Debugger {
 
