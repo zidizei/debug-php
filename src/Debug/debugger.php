@@ -12,7 +12,7 @@ namespace Debug;
  * Main class to display and prepare debug messages.
  * Determines PHP environment using php_sapi_name() to decide whether debug messages
  * should be printed to stdout or a browser's JavaScript console by echoing
- * JavaScript enclosed by <script> tags.
+ * the necessary JavaScript enclosed by <script> tags.
  *
  * @package Debug
  */
@@ -127,6 +127,8 @@ class Debugger {
         $tag   = ($tag == null) ? $this->currentProfile : $tag;
         $color = $this->profiles[$tag]['color'][$this->transport];
 
+        // if $obj is not an Array, it's likely originating from the Debugger itself
+        // so we don't need to build the debug message by preparing any weird objects or arrays...
         $msg   = (is_array($obj)) ? $this->buildDebugMessage($obj) : $obj;
 
         if ($this->lastDebug > 0) {
@@ -260,11 +262,11 @@ class Debugger {
 
     private function escapeForConsole ($obj)
     {
-      // TODO: if not a String, use another function to get a String representation of that object
-      //       and then escape it here
-      if (!is_string($obj)) return $obj;
-
-      return addslashes(str_replace("\n", "\\n", $obj));
+    	// TODO: if not a String, use another function to get a String representation of that object
+    	//       and then escape it here
+    	if (!is_string($obj)) return $obj;
+    	
+    	return addslashes(str_replace("\n", "\\n", $obj));
     }
 
 }
