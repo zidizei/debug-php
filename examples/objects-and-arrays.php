@@ -42,11 +42,19 @@ $arr4 = array("foo", $obj);
 \Debug\debug("one-dimensional array: %s", $arr1);
 \Debug\debug("multi-dimensional array: %s", $arr2);
 
+\Debug\profile("multiline");
+\Debug\debug($arr1);
+\Debug\profile();
+
 \Debug\profile();
 \Debug\profile("objects");
 
 \Debug\debug("object: %s", $obj);
 \Debug\debug("object without __toString(): %s", $obj2);
+
+\Debug\profile("multiline");
+\Debug\debug($obj);
+\Debug\profile();
 
 \Debug\profile();
 
