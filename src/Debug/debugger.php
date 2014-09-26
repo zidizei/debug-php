@@ -16,7 +16,8 @@ namespace Debug;
  *
  * @package Debug
  */
-class Debugger {
+class Debugger
+{
 
     private $profiles;
     private $currentProfile;
@@ -45,7 +46,7 @@ class Debugger {
         return self::$instance;
     }
 
-    public static function profile ($tag=null)
+    public static function profile ($tag = null)
     {
         $debugger = self::getInstance();
         $debugger->manageProfiles($tag);
@@ -61,22 +62,20 @@ class Debugger {
     private function __construct ()
     {
         $this->profiles = array();
-        $this->transport = (php_sapi_name() == 'cli') ? 'CLI' : 'Web'; // TODO: maybe check for some Browser extensions like Chrome Logger
+        // TODO: maybe check for some Browser extensions like Chrome Logger
+        $this->transport = (php_sapi_name() == 'cli') ? 'CLI' : 'Web';
     }
 
 
-    private function manageProfiles ($tag=null)
+    private function manageProfiles ($tag = null)
     {
-        if ($tag != null)
-        {
+        if ($tag != null) {
             if (isset($this->profiles[$tag])) {
                 $this->closeProfile($tag);
             } else {
                 $this->openProfile($tag);
             }
-        }
-        else
-        {
+        } else {
             if (count($this->profiles) > 0) {
                 // Get the tag name of the last profile.
                 end($this->profiles);
@@ -122,7 +121,7 @@ class Debugger {
     }
 
 
-    private function printDebug ($obj, $tag=null)
+    private function printDebug ($obj, $tag = null)
     {
         $tag   = ($tag == null) ? $this->currentProfile : $tag;
         $color = $this->profiles[$tag]['color'][$this->transport];
@@ -137,8 +136,7 @@ class Debugger {
             $duration = "+0";
         }
 
-        if ($this->transport == 'CLI')
-        {
+        if ($this->transport == 'CLI') {
             echo $color;
 
             echo $tag;
@@ -150,9 +148,7 @@ class Debugger {
             echo $duration." ms";
             echo "\033[0m";
             echo "\n";
-        }
-        else
-        {
+        } else {
             $msg = $this->escapeForConsole($msg);
 
             // TODO: if Browser extensions like Chrome Logger are utilised, the following would be the fallback solution
@@ -165,108 +161,104 @@ class Debugger {
 
     private function buildDebugMessage ($obj)
     {
-    	$count = count($obj);
+        $count = count($obj);
 
-    	if ($count == 0) return "";
+        if ($count == 0) {
+            return "";
+        }
 
-    	if (is_string($obj[0]))
-    	{
-    		// first argument is a string, so it will be used as the
-    		// `format` string for vsprintf()
+        if (is_string($obj[0])) {
+            // first argument is a string, so it will be used as the
+            // `format` string for vsprintf()
 
-    		$format = array_shift($obj);
-    		$args   = array();
+            $format = array_shift($obj);
+            $args   = array();
 
-	    	foreach ($obj as $value)
-	    	{
-	    		// if there are other elements in $obj, they will be passed
-	    		// as the `arguments` array for vsprintf()
+            foreach ($obj as $value) {
+                // if there are other elements in $obj, they will be passed
+                // as the `arguments` array for vsprintf()
 
-	    		if (is_array($value))
-	    		{
-	    			# create string representation of array (single line)
-	    			$args[] = str_replace("\n", "", $this->prepareDebugArray($value));
-	    		}
-	    		else if (is_object($value))
-	    		{
-	    			# create string representation of object (single line)
-	    			$args[] = str_replace("\n", "", $this->prepareDebugObject($value));
-	    		}
-	    		else
-	    		{
-	    			# other formats are supported using the apropriate `format` placeholder
-	    			$args[] = $value;
-	    		}
-	    	}
+                if (is_array($value)) {
+                    # create string representation of array (single line)
+                    $args[] = str_replace("\n", "", $this->prepareDebugArray($value));
+                } elseif (is_object($value)) {
+                    # create string representation of object (single line)
+                    $args[] = str_replace("\n", "", $this->prepareDebugObject($value));
+                } else {
+                    # other formats are supported using the apropriate `format` placeholder
+                    $args[] = $value;
+                }
+            }
 
-    		return vsprintf($format, $args);
-    	}
-    	else
-    	{
-    		// the first argument is not a string, so we will
-    		// display this thing over multiple lines
+            return vsprintf($format, $args);
+        } else {
+            // the first argument is not a string, so we will
+            // display this thing over multiple lines
 
-    		# if there are more elements inside $obj, we have no idea what the user wants to do though..
-    		if ($count > 1) throw new \InvalidArgumentException("");
+            # if there are more elements inside $obj, we have no idea what the user wants to do though..
+            if ($count > 1) {
+                throw new \InvalidArgumentException("");
+            }
 
-    		// TODO: better way to display stuff instead of just reusing the
-    		//       methods for singl-line debug messages
-    		if (is_array($obj[0]))
-    		{
-    			return $this->prepareDebugArray($obj[0]);
-    		}
-    		else if (is_object($obj[0]))
-    		{
-    			return $this->prepareDebugObject($obj[0]);
-    		}
-    		else
-    		{
-        		return $obj[0];
-    		}
-    	}
+            // TODO: better way to display stuff instead of just reusing the
+            //       methods for singl-line debug messages
+            if (is_array($obj[0])) {
+                return $this->prepareDebugArray($obj[0]);
+            } elseif (is_object($obj[0])) {
+                return $this->prepareDebugObject($obj[0]);
+            } else {
+                return $obj[0];
+            }
+        }
     }
 
     private function prepareDebugArray ($arr)
     {
-    	$str = "{ ";
-    	$i   = 0;
+        $str = "{ ";
+        $i   = 0;
 
-    	foreach ($arr as $key => $value)
-    	{
-    		if (!is_numeric($key)) $str .= $key.': ';
+        foreach ($arr as $key => $value) {
+            if (!is_numeric($key)) {
+                $str .= $key.': ';
+            }
 
-    		if (is_array($value)) {
-    			$str .= $this->prepareDebugArray($value);
-    		} else if (is_object($value)) {
-    			$str .= $this->prepareDebugObject($value);
-    		} else {
-				ob_start();
-				var_dump($value);
-				$str .= ob_get_clean();
-    		}
+            if (is_array($value)) {
+                $str .= $this->prepareDebugArray($value);
+            } elseif (is_object($value)) {
+                $str .= $this->prepareDebugObject($value);
+            } else {
+                ob_start();
+                var_dump($value);
+                $str .= ob_get_clean();
+            }
 
-    		if (++$i < count($arr)) $str .= ", ";
-    	}
+            if (++$i < count($arr)) {
+                $str .= ", ";
+            }
+        }
 
-    	$str .= " }";
+        $str .= " }";
 
-    	return $str;
+        return $str;
     }
 
     private function prepareDebugObject ($obj)
     {
-    	if (method_exists($obj, "__toString")) return (string) $obj;
+        if (method_exists($obj, "__toString")) {
+            return (string) $obj;
+        }
 
-    	return $this->prepareDebugArray(get_object_vars($obj));
+        return $this->prepareDebugArray(get_object_vars($obj));
     }
 
     private function escapeForConsole ($obj)
     {
-    	// TODO: if not a String, use another function to get a String representation of that object
-    	//       and then escape it here
-    	if (!is_string($obj)) return $obj;
-    	
-    	return addslashes(str_replace("\n", "\\n", $obj));
+        // TODO: if not a String, use another function to get a String representation of that object
+        //       and then escape it here
+        if (!is_string($obj)) {
+            return $obj;
+        }
+        
+        return addslashes(str_replace("\n", "\\n", $obj));
     }
-
 }

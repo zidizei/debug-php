@@ -19,7 +19,7 @@ use Debug\Debugger;
  * 					  profile currently open, or - if no profile has
  * 					  been opened yet - opens a default one.
  */
-function profile ($tag=null)
+function profile ($tag = null)
 {
     Debugger::profile($tag);
 }
@@ -34,7 +34,7 @@ function profile ($tag=null)
  */
 function debug()
 {
-	$argv = func_get_args();
+    $argv = func_get_args();
 
-	Debugger::debug($argv);
+    Debugger::debug($argv);
 }

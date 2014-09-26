@@ -104,5 +104,5 @@ The milliseconds at the end of each debug line indicate the time
 difference between the execution of the current debug message
 and the previous one.
 
-Additionally, each profile duration is measured an displayed once
+Additionally, each profile duration is measured and displayed once
 it has been closed.
