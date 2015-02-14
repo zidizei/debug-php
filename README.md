@@ -6,6 +6,8 @@ or the browser's JavaScript console, if supported.
 Heavily inspired by [debug](https://github.com/visionmedia/debug)
 for [node.js](http://nodejs.org).
 
+[![Latest Stable Version](https://poser.pugx.org/zidizei/debug/v/stable.svg)](https://packagist.org/packages/zidizei/debug) [![Total Downloads](https://poser.pugx.org/zidizei/debug/downloads.svg)](https://packagist.org/packages/zidizei/debug) [![License](https://poser.pugx.org/zidizei/debug/license.svg)](https://packagist.org/packages/zidizei/debug)
+
 ## Installation
 
 Use [Composer](http://getcomposer.org) and add this to your
