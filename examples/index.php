@@ -7,6 +7,12 @@
 // Autoload Debugger via composer
 require "../vendor/autoload.php";
 
+// Turn off debugging with
+// \Debug\off();
+
+// Reenable debugging with
+// \Debug\on();
+
 // initiate debug profile named 'parser'
 \Debug\profile("parser");
 

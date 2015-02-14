@@ -10,6 +10,23 @@ namespace Debug;
 
 use Debug\Debugger;
 
+
+/**
+ *
+ */
+function on ()
+{
+    Debugger::on();
+}
+
+/**
+ *
+ */
+function off ()
+{
+    Debugger::off();
+}
+
 /**
  * Helper function for opening/closing debugging profiles.
  * Maps to the static and public method \Debug\Debugger::profile().

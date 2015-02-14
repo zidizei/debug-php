@@ -36,6 +36,7 @@ class Debugger
     private $lastDebug = 0;
 
     private static $instance = null;
+    private static $isOn     = true;
 
     private static function getInstance()
     {
@@ -48,14 +49,30 @@ class Debugger
 
     public static function profile ($tag = null)
     {
+        if (self::$isOn == false)
+            return false;
+
         $debugger = self::getInstance();
         $debugger->manageProfiles($tag);
     }
 
     public static function debug ($obj)
     {
+        if (self::$isOn == false)
+            return false;
+
         $debugger = self::getInstance();
         $debugger->printDebug($obj);
+    }
+
+    public static function on ()
+    {
+        self::$isOn = true;
+    }
+
+    public static function off ()
+    {
+        self::$isOn = false;
     }
 
 
@@ -258,7 +275,7 @@ class Debugger
         if (!is_string($obj)) {
             return $obj;
         }
-        
+
         return addslashes(str_replace("\n", "\\n", $obj));
     }
 }
