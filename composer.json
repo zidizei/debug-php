@@ -2,7 +2,7 @@
 	"name": "zidizei/debug",
 	"description": "Simple debugging utility for PHP.",
 	"keywords": ["debug", "console", "javascript"],
-	"homepage": "http://github.com/zidizei/debug-php",
+	"homepage": "http://patrickl.am/debug-php",
 	"license": "MIT",
 	"authors": [
 		{
