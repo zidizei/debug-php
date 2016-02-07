@@ -41,7 +41,7 @@ require "vendor/autoload.php";
 The above code will produce something like this when run using
 a web server and browser:
 
-![parser debug](http://attic.patrickl.am/zidizei/debug-php/debug-parser.png)
+![parser debug](https://patrickl.am/attic/debug-php/debug-parser.png)
 
 Output to `stdout` will look more or less the same using colors
 defined by your shell.
@@ -103,7 +103,7 @@ require "../vendor/autoload.php";
 The above code will produce something like this when run using
 a web server and browser:
 
-![multiple profiles debug](http://attic.patrickl.am/zidizei/debug-php/debug-profiles.png)
+![multiple profiles debug](https://patrickl.am/attic/debug-php/debug-profiles.png)
 
 Output to `stdout` will look more or less the same using colors
 defined by your shell.
