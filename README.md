@@ -46,6 +46,14 @@ a web server and browser:
 Output to `stdout` will look more or less the same using colors
 defined by your shell.
 
+### Disabling debugging messages
+
+By default, **debug-php** is good to go by just calling its methods.
+Since 0.1.1 you can call `\Debug\off()` to explicitly disable
+debugging messages. In combination with `\Debug\on()`, this
+could be used to programmatically decide to skip debug messages
+for certain sections of your code.
+
 ### Multiple Profiles
 
 You can use *profiles* to better distinguish some of your debug
